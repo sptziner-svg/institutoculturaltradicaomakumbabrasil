@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import tataFoto from "@/assets/tata-rogerio.jpg.asset.json";
 import { Reveal } from "@/components/Reveal";
 import { WhatsAppButton, WHATSAPP_DISPLAY } from "@/components/WhatsAppButton";
 
@@ -115,8 +114,8 @@ function Index() {
                 className="absolute inset-0 -m-3 rounded-full bg-gradient-to-b from-gold/40 to-blood/30 blur-md"
               />
               <img
-                src={tataFoto.url}
-                alt="Tatá Rogério, dirigente do Instituto Cultural Tradição Makumba Brasil"
+                src="/tata-rogerio.png"
+                alt="tata Rogério, dirigente do Instituto Cultural Tradição Makumba Brasil"
                 width={480}
                 height={480}
                 className="relative h-52 w-52 rounded-full border border-gold/50 object-cover object-top sm:h-64 sm:w-64"
@@ -125,7 +124,7 @@ function Index() {
           </Reveal>
 
           <Reveal delay={320}>
-            <p className="mt-6 font-display text-lg text-gold sm:text-xl">Tatá Rogério</p>
+            <p className="mt-6 font-display text-lg text-gold sm:text-xl">tata Rogério</p>
             <p className="mt-1 text-xs tracking-[0.2em] text-muted-foreground uppercase">
               Dirigente da casa
             </p>
@@ -237,8 +236,8 @@ function Index() {
         <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
           <Reveal>
             <img
-              src={tataFoto.url}
-              alt="Tatá Rogério, dirigente da casa"
+              src="/tata-rogerio.png"
+              alt="tata Rogério, dirigente da casa"
               width={720}
               height={720}
               className="w-full rounded-sm border border-gold/30 object-cover"
