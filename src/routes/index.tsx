@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import tataFoto from "@/assets/tata-rogerio.jpg.asset.json";
 import { Reveal } from "@/components/Reveal";
 import { WhatsAppButton, WHATSAPP_DISPLAY } from "@/components/WhatsAppButton";
 
