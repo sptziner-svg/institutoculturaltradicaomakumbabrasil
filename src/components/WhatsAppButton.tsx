@@ -5,7 +5,7 @@ export function WhatsAppButton({
   children = "Falar pelo WhatsApp",
   large = false,
 }: {
-  children?: string;
+  children?: React.ReactNode;
   large?: boolean;
 }) {
   return (
