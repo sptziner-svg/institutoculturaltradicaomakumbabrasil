@@ -116,7 +116,7 @@ export function JoinSection() {
                 com a casa diretamente.
               </p>
             )}
-            {status === "error" && <p className="text-sm text-blood-foreground">{error}</p>}
+            {status === "error" && <p className="text-sm text-gold-soft">{error}</p>}
           </form>
         </Reveal>
       </div>
