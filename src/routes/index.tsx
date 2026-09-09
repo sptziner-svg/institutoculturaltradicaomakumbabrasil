@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Reveal } from "@/components/Reveal";
+import { JoinSection } from "@/components/JoinSection";
+import { LocationSection } from "@/components/LocationSection";
 import { WhatsAppButton, WHATSAPP_DISPLAY } from "@/components/WhatsAppButton";
 
 const TITLE = "Instituto Cultural Tradição Makumba Brasil";
@@ -288,6 +290,10 @@ function Index() {
           </div>
         </div>
       </section>
+
+      <LocationSection />
+
+      <JoinSection />
 
       <footer className="border-t border-border/60 px-5 py-10 text-center">
         <div className="mx-auto w-24 gold-rule" />
