@@ -4,6 +4,7 @@ const links = [
   { to: "/", label: "Início" },
   { to: "/jogos", label: "Jogos" },
   { to: "/eventos", label: "Eventos" },
+  { to: "/auth", label: "Entrar" },
 ] as const;
 
 export function SiteNav() {
