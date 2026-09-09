@@ -46,6 +46,8 @@ function AdminPage() {
       const { data: userData } = await supabase.auth.getUser();
       const uid = userData.user?.id;
       if (!uid) return { isAdmin: false, email: "" };
+      // A primeira conta que acessa o painel assume a administração da casa.
+      await supabase.rpc("claim_first_admin");
       const { data } = await supabase
         .from("user_roles")
         .select("role")
