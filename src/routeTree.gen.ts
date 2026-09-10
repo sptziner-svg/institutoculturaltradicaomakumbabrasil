@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as EventosRouteImport } from './routes/eventos'
 import { Route as JogosRouteImport } from './routes/jogos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicMidiaSplatRouteImport } from './routes/api/public/midia/$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -45,6 +46,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicMidiaSplatRoute = ApiPublicMidiaSplatRouteImport.update({
+  id: '/api/public/midia/$',
+  path: '/api/public/midia/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/eventos': typeof EventosRoute
   '/jogos': typeof JogosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/public/midia/$': typeof ApiPublicMidiaSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/eventos': typeof EventosRoute
   '/jogos': typeof JogosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/public/midia/$': typeof ApiPublicMidiaSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,12 +76,14 @@ export interface FileRoutesById {
   '/eventos': typeof EventosRoute
   '/jogos': typeof JogosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/api/public/midia/$': typeof ApiPublicMidiaSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/eventos' | '/jogos' | '/admin'
+  fullPaths:
+    '/' | '/auth' | '/eventos' | '/jogos' | '/admin' | '/api/public/midia/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/eventos' | '/jogos' | '/admin'
+  to: '/' | '/auth' | '/eventos' | '/jogos' | '/admin' | '/api/public/midia/$'
   id:
     | '__root__'
     | '/'
@@ -82,6 +92,7 @@ export interface FileRouteTypes {
     | '/eventos'
     | '/jogos'
     | '/_authenticated/admin'
+    | '/api/public/midia/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -90,6 +101,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   EventosRoute: typeof EventosRoute
   JogosRoute: typeof JogosRoute
+  ApiPublicMidiaSplatRoute: typeof ApiPublicMidiaSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -136,6 +148,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/midia/$': {
+      id: '/api/public/midia/$'
+      path: '/api/public/midia/$'
+      fullPath: '/api/public/midia/$'
+      preLoaderRoute: typeof ApiPublicMidiaSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -156,6 +175,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   EventosRoute: EventosRoute,
   JogosRoute: JogosRoute,
+  ApiPublicMidiaSplatRoute: ApiPublicMidiaSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
