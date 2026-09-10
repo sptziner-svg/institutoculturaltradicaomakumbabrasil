@@ -1,16 +1,38 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
+import logoAsset from "@/assets/logo-instituto.jpg.asset.json";
 import { Reveal } from "@/components/Reveal";
 import { JoinSection } from "@/components/JoinSection";
 import { LocationSection } from "@/components/LocationSection";
 import { WhatsAppButton, WHATSAPP_DISPLAY } from "@/components/WhatsAppButton";
+import { eventsQuery, formatEventDate, formatPostDate, postsQuery, settingsQuery } from "@/lib/queries";
 
 const TITLE = "Instituto Cultural Tradição Makumba Brasil";
 const DESCRIPTION =
   "Casa de tradição que guarda, transmite e resgata a Makumba Carioca, a Quimbanda, o Culto Tradicional Yorùbá, a Bruxaria Ibero Celta, o Hoodoo e a Pajelança.";
 
 export const Route = createFileRoute("/")({
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(settingsQuery),
+      context.queryClient.ensureQueryData(eventsQuery),
+      context.queryClient.ensureQueryData(postsQuery),
+    ]);
+  },
   component: Index,
+  errorComponent: () => (
+    <main className="flex min-h-screen items-center justify-center px-5 text-center">
+      <p className="text-muted-foreground">
+        Não conseguimos carregar a página agora. Tente novamente em instantes.
+      </p>
+    </main>
+  ),
+  notFoundComponent: () => (
+    <main className="flex min-h-screen items-center justify-center px-5 text-center">
+      <p className="text-muted-foreground">Página não encontrada.</p>
+    </main>
+  ),
   head: () => ({
     meta: [
       { title: `${TITLE} — Tradição, ancestralidade e ensinamento` },
@@ -18,7 +40,6 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "/" }],
@@ -31,6 +52,14 @@ export const Route = createFileRoute("/")({
           name: TITLE,
           description: DESCRIPTION,
           telephone: "+5513997274710",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Rua Oito, 200 — Pq Vergara / Aguapeú",
+            addressLocality: "Itanhaém",
+            addressRegion: "SP",
+            postalCode: "11744-036",
+            addressCountry: "BR",
+          },
         }),
       },
     ],
@@ -82,23 +111,52 @@ const vertentes = [
   },
 ];
 
+const oraculos = [
+  {
+    nome: "Ẹ̀rìndínlógún",
+    texto:
+      "O jogo dos dezesseis búzios, oráculo tradicional Yorùbá. Fala pela voz dos Òrìṣà e da ancestralidade.",
+  },
+  {
+    nome: "Oráculo de Quimbanda",
+    texto:
+      "A leitura própria da Quimbanda, direta e objetiva, feita dentro da sua liturgia e hierarquia.",
+  },
+];
+
 function Index() {
+  const { data: settings } = useSuspenseQuery(settingsQuery);
+  const { data: eventos } = useSuspenseQuery(eventsQuery);
+  const { data: posts } = useSuspenseQuery(postsQuery);
+
+  const tataPhoto = settings["tata_photo_url"] || "/tata-rogerio.png";
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Abertura */}
-      <section className="relative overflow-hidden px-5 pt-16 pb-20 sm:pt-24">
+      <section className="relative overflow-hidden px-5 pt-14 pb-20 sm:pt-20">
         <div
           aria-hidden
           className="pointer-events-none absolute -top-40 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-gold/12 blur-3xl"
         />
         <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
           <Reveal>
-            <p className="font-display text-[0.7rem] tracking-[0.35em] text-gold uppercase">
-              Casa de Tradição
+            <img
+              src={logoAsset.url}
+              alt="Logo do Instituto Cultural Tradição Makumba Brasil"
+              width={640}
+              height={640}
+              className="h-40 w-40 rounded-sm object-contain sm:h-56 sm:w-56"
+            />
+          </Reveal>
+
+          <Reveal delay={90}>
+            <p className="mt-6 font-display text-[0.7rem] tracking-[0.35em] text-gold uppercase">
+              Ancestralidade, Resistência e Makumba
             </p>
           </Reveal>
 
-          <Reveal delay={100}>
+          <Reveal delay={140}>
             <h1 className="mt-5 text-3xl leading-tight text-balance-tight sm:text-5xl">
               Instituto Cultural
               <span className="mt-1 block text-gold">Tradição Makumba Brasil</span>
@@ -116,7 +174,7 @@ function Index() {
                 className="absolute inset-0 -m-3 rounded-full bg-gradient-to-b from-gold/40 to-blood/30 blur-md"
               />
               <img
-                src="/tata-rogerio.png"
+                src={tataPhoto}
                 alt="tata Rogério, dirigente do Instituto Cultural Tradição Makumba Brasil"
                 width={480}
                 height={480}
@@ -148,7 +206,7 @@ function Index() {
       </section>
 
       {/* Quem Somos */}
-      <section className="border-t border-border/60 px-5 py-20">
+      <section id="quem-somos" className="scroll-mt-20 border-t border-border/60 px-5 py-20">
         <div className="mx-auto max-w-3xl">
           <Reveal>
             <p className="font-display text-[0.7rem] tracking-[0.35em] text-gold uppercase">
@@ -233,12 +291,160 @@ function Index() {
         </div>
       </section>
 
+      {/* Jogos */}
+      <section id="jogos" className="scroll-mt-20 border-t border-border/60 px-5 py-20">
+        <div className="mx-auto max-w-4xl">
+          <Reveal>
+            <p className="font-display text-[0.7rem] tracking-[0.35em] text-gold uppercase">
+              04 — Os Jogos
+            </p>
+            <h2 className="mt-4 text-2xl leading-snug text-balance-tight sm:text-4xl">
+              Oráculos que o tata joga.
+            </h2>
+          </Reveal>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {oraculos.map((o, i) => (
+              <Reveal key={o.nome} delay={110 + i * 90}>
+                <article className="h-full rounded-sm border border-border/70 bg-card/50 p-6">
+                  <h3 className="font-display text-lg text-gold">{o.nome}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{o.texto}</p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal delay={280}>
+            <div className="mt-8 flex flex-wrap items-center gap-6">
+              <WhatsAppButton>Agende seu horário agora</WhatsAppButton>
+              <Link
+                to="/jogos"
+                className="font-display text-xs tracking-widest text-gold uppercase underline decoration-gold/40 underline-offset-4"
+              >
+                Ver os jogos em detalhe
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Eventos */}
+      <section id="eventos" className="scroll-mt-20 border-t border-border/60 px-5 py-20">
+        <div className="mx-auto max-w-4xl">
+          <Reveal>
+            <p className="font-display text-[0.7rem] tracking-[0.35em] text-gold uppercase">
+              05 — Agenda
+            </p>
+            <h2 className="mt-4 text-2xl leading-snug text-balance-tight sm:text-4xl">
+              Próximos eventos
+            </h2>
+          </Reveal>
+
+          <div className="mt-10 space-y-3">
+            {eventos.length === 0 && (
+              <p className="text-muted-foreground">
+                Nenhum evento marcado no momento. Fale com a casa pelo WhatsApp para saber das
+                próximas datas.
+              </p>
+            )}
+            {eventos.slice(0, 4).map((e, i) => (
+              <Reveal key={e.id} delay={100 + i * 80}>
+                <article className="rounded-sm border border-border/70 bg-card/50 p-6 transition-colors hover:border-gold/70">
+                  <p className="font-display text-xs tracking-[0.2em] text-gold uppercase">
+                    {formatEventDate(e.starts_at)}
+                  </p>
+                  <h3 className="mt-3 font-display text-xl">{e.title}</h3>
+                  {e.location && (
+                    <p className="mt-1 text-sm text-muted-foreground">{e.location}</p>
+                  )}
+                  {e.description && (
+                    <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                      {e.description}
+                    </p>
+                  )}
+                </article>
+              </Reveal>
+            ))}
+          </div>
+
+          {eventos.length > 4 && (
+            <Link
+              to="/eventos"
+              className="mt-8 inline-block font-display text-xs tracking-widest text-gold uppercase underline decoration-gold/40 underline-offset-4"
+            >
+              Ver toda a agenda
+            </Link>
+          )}
+        </div>
+      </section>
+
+      {/* Diário / postagens */}
+      <section id="blog" className="scroll-mt-20 border-t border-border/60 px-5 py-20">
+        <div className="mx-auto max-w-4xl">
+          <Reveal>
+            <p className="font-display text-[0.7rem] tracking-[0.35em] text-gold uppercase">
+              06 — Diário
+            </p>
+            <h2 className="mt-4 text-2xl leading-snug text-balance-tight sm:text-4xl">
+              Palavra da casa
+            </h2>
+          </Reveal>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {posts.length === 0 && (
+              <p className="text-muted-foreground">Nenhuma postagem publicada ainda.</p>
+            )}
+            {posts.slice(0, 4).map((p, i) => (
+              <Reveal key={p.id} delay={100 + i * 80}>
+                <article className="h-full overflow-hidden rounded-sm border border-border/70 bg-card/50 transition-colors hover:border-gold/70">
+                  {p.cover_url && (
+                    <img
+                      src={p.cover_url}
+                      alt={p.title}
+                      className="h-44 w-full object-cover"
+                      loading="lazy"
+                    />
+                  )}
+                  <div className="p-6">
+                    <p className="font-display text-xs tracking-[0.2em] text-gold uppercase">
+                      {formatPostDate(p.published_at)}
+                    </p>
+                    <h3 className="mt-3 font-display text-lg">{p.title}</h3>
+                    {p.excerpt && (
+                      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                        {p.excerpt}
+                      </p>
+                    )}
+                    <Link
+                      to="/blog/$slug"
+                      params={{ slug: p.slug }}
+                      className="mt-4 inline-block font-display text-xs tracking-widest text-gold uppercase underline decoration-gold/40 underline-offset-4"
+                    >
+                      Ler
+                    </Link>
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+
+          {posts.length > 0 && (
+            <Link
+              to="/blog"
+              className="mt-8 inline-block font-display text-xs tracking-widest text-gold uppercase underline decoration-gold/40 underline-offset-4"
+            >
+              Ver todas as postagens
+            </Link>
+          )}
+        </div>
+      </section>
+
       {/* Dirigente */}
       <section className="border-t border-border/60 px-5 py-20">
         <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
           <Reveal>
             <img
-              src="/tata-rogerio.png"
+              src={tataPhoto}
               alt="tata Rogério, dirigente da casa"
               width={720}
               height={720}
@@ -248,9 +454,9 @@ function Index() {
           </Reveal>
           <Reveal delay={140}>
             <p className="font-display text-[0.7rem] tracking-[0.35em] text-gold uppercase">
-              04 — O Dirigente
+              07 — O Dirigente
             </p>
-            <h2 className="mt-4 text-2xl leading-snug sm:text-4xl">Tatá Rogério</h2>
+            <h2 className="mt-4 text-2xl leading-snug sm:text-4xl">tata Rogério</h2>
             <div className="mt-6 space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
               <p>
                 Dirigente do Instituto Cultural Tradição Makumba Brasil, é quem conduz os cultos,
@@ -262,7 +468,7 @@ function Index() {
               </p>
             </div>
             <div className="mt-8">
-              <WhatsAppButton>Falar com o Tatá</WhatsAppButton>
+              <WhatsAppButton>Falar com o tata</WhatsAppButton>
             </div>
           </Reveal>
         </div>
@@ -276,7 +482,7 @@ function Index() {
         />
         <div className="relative mx-auto max-w-2xl">
           <p className="font-display text-[0.7rem] tracking-[0.35em] text-gold uppercase">
-            05 — Contato
+            08 — Contato
           </p>
           <h2 className="mt-4 text-2xl leading-snug text-balance-tight sm:text-4xl">
             A porta está aberta para quem chega com respeito.

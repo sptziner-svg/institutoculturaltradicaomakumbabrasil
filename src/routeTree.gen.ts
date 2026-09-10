@@ -12,9 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as EventosRouteImport } from './routes/eventos'
 import { Route as JogosRouteImport } from './routes/jogos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiPublicMidiaSplatRouteImport } from './routes/api/public/midia/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +31,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventosRoute = EventosRouteImport.update({
@@ -46,6 +53,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
+} as any)
 const ApiPublicMidiaSplatRoute = ApiPublicMidiaSplatRouteImport.update({
   id: '/api/public/midia/$',
   path: '/api/public/midia/$',
@@ -55,17 +67,21 @@ const ApiPublicMidiaSplatRoute = ApiPublicMidiaSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
   '/eventos': typeof EventosRoute
   '/jogos': typeof JogosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/api/public/midia/$': typeof ApiPublicMidiaSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
   '/eventos': typeof EventosRoute
   '/jogos': typeof JogosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/api/public/midia/$': typeof ApiPublicMidiaSplatRoute
 }
 export interface FileRoutesById {
@@ -73,25 +89,44 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
   '/eventos': typeof EventosRoute
   '/jogos': typeof JogosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/api/public/midia/$': typeof ApiPublicMidiaSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/eventos' | '/jogos' | '/admin' | '/api/public/midia/$'
+    | '/'
+    | '/auth'
+    | '/blog'
+    | '/eventos'
+    | '/jogos'
+    | '/admin'
+    | '/blog/$slug'
+    | '/api/public/midia/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/eventos' | '/jogos' | '/admin' | '/api/public/midia/$'
+  to:
+    | '/'
+    | '/auth'
+    | '/blog'
+    | '/eventos'
+    | '/jogos'
+    | '/admin'
+    | '/blog/$slug'
+    | '/api/public/midia/$'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/blog'
     | '/eventos'
     | '/jogos'
     | '/_authenticated/admin'
+    | '/blog/$slug'
     | '/api/public/midia/$'
   fileRoutesById: FileRoutesById
 }
@@ -99,6 +134,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  BlogRoute: typeof BlogRouteWithChildren
   EventosRoute: typeof EventosRoute
   JogosRoute: typeof JogosRoute
   ApiPublicMidiaSplatRoute: typeof ApiPublicMidiaSplatRoute
@@ -127,6 +163,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/eventos': {
       id: '/eventos'
       path: '/eventos'
@@ -147,6 +190,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
     }
     '/api/public/midia/$': {
       id: '/api/public/midia/$'
@@ -169,10 +219,21 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  BlogRoute: BlogRouteWithChildren,
   EventosRoute: EventosRoute,
   JogosRoute: JogosRoute,
   ApiPublicMidiaSplatRoute: ApiPublicMidiaSplatRoute,
