@@ -1,7 +1,10 @@
 import { Reveal } from "@/components/Reveal";
 
-const ADDRESS = "Rua Oito, Jd Aguapeú — Itanhaém/SP";
-const MAPS_QUERY = encodeURIComponent("Rua Oito, Jardim Aguapeu, Itanhaém, SP, Brasil");
+const ADDRESS = "Rua Oito, 200 — Pq Vergara / Aguapeú, Itanhaém — SP, 11744-036";
+const MAPS_QUERY = encodeURIComponent("Rua Oito, 200, Aguapeu, Itanhaém - SP, 11744-036");
+const LAT = -24.141437;
+const LNG = -46.781188;
+const D = 0.006;
 
 export function LocationSection() {
   return (
@@ -15,21 +18,31 @@ export function LocationSection() {
           <address className="mt-5 text-base leading-relaxed text-muted-foreground not-italic">
             {ADDRESS}
           </address>
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${MAPS_QUERY}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 inline-block font-display text-xs tracking-widest text-gold uppercase underline decoration-gold/40 underline-offset-4"
-          >
-            Abrir no mapa
-          </a>
+          <div className="mt-4 flex flex-wrap gap-5">
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${MAPS_QUERY}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block font-display text-xs tracking-widest text-gold uppercase underline decoration-gold/40 underline-offset-4"
+            >
+              Abrir no mapa
+            </a>
+            <a
+              href="https://plus.codes/587MV659+CG"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block font-display text-xs tracking-widest text-muted-foreground uppercase underline decoration-border underline-offset-4 hover:text-gold"
+            >
+              Plus code V659+CG
+            </a>
+          </div>
         </Reveal>
 
         <Reveal delay={140}>
           <div className="mt-8 overflow-hidden rounded-sm border border-gold/30">
             <iframe
-              title="Mapa da localização do instituto em Itanhaém"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=-46.835%2C-24.203%2C-46.775%2C-24.163&layer=mapnik&marker=-24.183%2C-46.805"
+              title="Mapa da localização do instituto — Rua Oito, 200, Aguapeú, Itanhaém/SP"
+              src={`https://www.openstreetmap.org/export/embed.html?bbox=${LNG - D}%2C${LAT - D}%2C${LNG + D}%2C${LAT + D}&layer=mapnik&marker=${LAT}%2C${LNG}`}
               className="h-72 w-full border-0 sm:h-96"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
