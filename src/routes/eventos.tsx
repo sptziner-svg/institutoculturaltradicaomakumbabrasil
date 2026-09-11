@@ -1,18 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { Reveal } from "@/components/Reveal";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
-import { listPublicEvents } from "@/lib/events.functions";
+import { eventsQuery, formatEventDate } from "@/lib/queries";
 
 const TITLE = "Próximos Eventos — Instituto Cultural Tradição Makumba Brasil";
 const DESCRIPTION =
   "Giras, encontros e atividades do Instituto Cultural Tradição Makumba Brasil em Itanhaém/SP.";
-
-const eventsQuery = queryOptions({
-  queryKey: ["public-events"],
-  queryFn: () => listPublicEvents(),
-});
 
 export const Route = createFileRoute("/eventos")({
   loader: ({ context }) => context.queryClient.ensureQueryData(eventsQuery),
