@@ -70,7 +70,7 @@ async function uploadImage(file: File, folder: string) {
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
   const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
   const { error } = await supabase.storage.from("midia").upload(path, file, {
-    contentType: file.type || undefined,
+    ...(file.type ? { contentType: file.type } : {}),
     upsert: false,
   });
   if (error) throw new Error(error.message);
