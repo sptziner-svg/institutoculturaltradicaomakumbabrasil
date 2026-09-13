@@ -32,15 +32,6 @@ export const Route = createFileRoute("/eventos")({
   }),
 });
 
-export function formatEventDate(iso: string) {
-  return new Date(iso).toLocaleString("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
 
 function EventosPage() {
   const { data: eventos } = useSuspenseQuery(eventsQuery);
